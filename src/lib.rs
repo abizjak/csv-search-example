@@ -213,7 +213,11 @@ impl CompiledQuery {
     /// This assumes that the record belongs to the data on which the query was compiled,
     /// otherwise the behaviour is not well-defined and this method might panic.
     fn on_row<'a>(&self, record: &'a StringRecord) -> Option<Vec<&'a str>> {
-        if self.filters.iter().all(|filter| filter.check_record(record)) {
+        if self
+            .filters
+            .iter()
+            .all(|filter| filter.check_record(record))
+        {
             Some(
                 self.projections
                     .iter()

@@ -69,9 +69,10 @@ To make this more production ready at least the following is needed
 rather than forwarding `nom` errors. Likely writing a recursive descent parser
 is a better way to do this.
 
-- more tests of negative scenarios. In the interest of time there is limited
-  testing at the moment, only making sure the behaviour is correct in expected
-  cases.
+- more tests of negative scenarios and automated unit tests of the full
+ pipeline. In the interest of time there is limited testing at the moment, only
+ making sure the behaviour of parsing and compilation correct in some expected
+ cases.
 
 
 ## Examples
@@ -101,3 +102,19 @@ $ ./target/release/csv-search --input "data/input2.csv" --query 'PROJECT aaaa, b
 aaaa,bbbb
 2,yyy
 ```
+
+### CI
+
+The code is expected to run with no clippy warnings
+```
+cargo clippy
+```
+should produce no warnings.
+
+Tests are checked on each commit. They can be run by executing
+
+```
+cargo test
+```
+
+(or add `--release` when tests become more extensive to make them execute faster).
