@@ -18,6 +18,25 @@ described above, because we cannot start executing filters until we know the
 type of the column in general. Note that this semantics is a bit different than
 that implemented by, e.g., Excel. There Strings are always larger than integers.
 
+### A little bit about architecture
+
+The processing is designed to run in a few steps.
+- determine the types of columns in the input, this is the job of `LoadedCSV`
+  struct and it's `from_path` or `from_reader` methods. They will make a single
+  traversal of the input and determine types of columns and whether the input is
+  valid CSV. Note that the first row of the input is taken as special header row
+  naming the columns.
+
+- a string is parsed into a `Query` struct (via the `parse_query` function).
+  This `Query` itself cannot be directly executed. It must be first compiled to
+  a `CompiledQuery` in the context of a schema. This compilation does validation
+  making sure that all the fields that are referred to in the query exist as
+  columns, and that comparisons make sense, e.g., that we're not comparing an
+  integer column to a string column.
+
+- the query can then be executed on the input data. This does a second traversal
+  of the data, now the data is in-memory.
+
 This is a simple example, and has the following tradeoffs
 - the library just uses anyhow::Error everywhere for error reporting, it does
   not define explicit errors (and use, e.g., thiserror to make them ergonomic)
